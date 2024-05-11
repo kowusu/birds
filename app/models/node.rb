@@ -2,14 +2,19 @@ class Node < ApplicationRecord
   belongs_to :parent, class_name: 'Node', optional: true
   has_many :children, class_name: 'Node', foreign_key: 'parent_id'
 
-  def ancestors
+  before_save :set_ancestor_path
+
+  def set_ancestor_path
     node = self
-    result = []
+    self.ancestor_path = []
     while node.parent
-      result << node.parent
+      self.ancestor_path << node.parent.id
       node = node.parent
     end
-    result
+  end
+
+  def ancestors
+    Node.where(id: ancestor_path).order(id: :desc).to_a
   end
 
   def lowest_common_ancestor(other)
