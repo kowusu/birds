@@ -26,6 +26,15 @@ RSpec.describe CommonAncestors, type: :model do
       end
     end
 
+    context 'when it is the same node' do
+      let(:node_a) { grandchild }
+      let(:node_b) { grandchild }
+
+      it 'returns itself' do
+        expect(common_ancestors.lowest).to eq(node_a)
+      end
+    end
+
     it "returns the lowest common ancestor of two nodes" do
       expect(common_ancestors.lowest).to eq(root)
     end
@@ -41,6 +50,14 @@ RSpec.describe CommonAncestors, type: :model do
   describe "#depth_common_ancestors" do
     it "returns the depeth of common ancestor" do
       expect(common_ancestors.depth).to eq(1)
+    end
+
+    context "returns nil" do
+      let(:node_a) { root }
+      let(:node_b) { other }
+      it "returns nil when no common ancestors" do
+        expect(common_ancestors.depth).to be_nil
+      end
     end
   end
 end

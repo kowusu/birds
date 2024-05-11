@@ -1,6 +1,3 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
+  get '/nodes/:node_a_id/common_ancestors/:node_b_id', to: 'nodes#common_ancestors'
 end
