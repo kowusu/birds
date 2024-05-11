@@ -11,4 +11,10 @@ class Node < ApplicationRecord
     end
     result
   end
+
+  def lowest_common_ancestor(other)
+    return if other.nil?
+
+    (self.ancestors & other.ancestors).first
+  end
 end
