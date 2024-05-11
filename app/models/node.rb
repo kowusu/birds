@@ -13,13 +13,14 @@ class Node < ApplicationRecord
     end
   end
 
-  def ancestors
-    Node.where(id: ancestor_path).order(id: :desc).to_a
+  def family_tree
+    @family_tree ||= Node.where(id: ancestor_path).to_a
   end
 
-  def lowest_common_ancestor(other)
+  def common_ancestors(other)
     return if other.nil?
+    return @common_ancestors if @common_ancestors&.include?(other)
 
-    (self.ancestors & other.ancestors).first
+    @common_ancestors = CommonAncestors.new(node_a: self, node_b: other)
   end
 end
