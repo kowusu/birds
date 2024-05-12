@@ -8,13 +8,20 @@ RSpec.describe Node, type: :model do
   let(:child) { create(:node, parent: parent) }
   let(:grandchild) { create(:node, parent: child) }
 
-  describe "#family_tree" do
+  describe "#ancestors" do
     it "returns an empty array if the node has no parents" do
-      expect(root.family_tree).to eq([])
+      expect(root.ancestors).to eq([])
     end
 
     it "returns all ancestors of a node" do
-      expect(child.family_tree).to eq([root, parent])
+      expect(child.ancestors).to eq([root, parent])
+    end
+  end
+
+  describe "#find_node_ids_with_descendant_ids" do
+    it "returns descendant ids for given node ids" do
+      [root, parent, child]
+      expect(Node.find_node_ids_with_descendant_ids([root.id])).to contain_exactly(root.id,parent.id, child.id)
     end
   end
 end

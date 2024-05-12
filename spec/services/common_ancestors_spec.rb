@@ -12,8 +12,7 @@ RSpec.describe CommonAncestors, type: :model do
   let(:node_b) { grandchild }
 
   describe "#lowest" do
-    let(:node_b) { uncle }
-    describe "returns nil if" do
+    context "returns nil if" do
       let(:node_a) { root }
       let(:node_b) { other }
       it "there is no common ancestor" do
