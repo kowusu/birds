@@ -1,25 +1,36 @@
 class Node < ApplicationRecord
   belongs_to :parent, class_name: 'Node', optional: true
   has_many :children, class_name: 'Node', foreign_key: 'parent_id'
+  has_many :birds
 
   def ancestors
     Rails.cache.fetch("#{cache_key_with_version}/ancestors", expires_in: 12.hour) do
       sql = <<-SQL
         WITH RECURSIVE ancestors AS (
-            SELECT *
+            SELECT *, 1 AS depth
             FROM nodes
             WHERE id = :start_node_id
           UNION ALL
-            SELECT n.*
+            SELECT n.*, a.depth + 1
             FROM nodes n
             JOIN ancestors a ON a.parent_id = n.id
         )
-        SELECT * FROM ancestors WHERE id != :start_node_id;
+        SELECT * FROM ancestors ORDER BY depth DESC;
       SQL
 
       Node.find_by_sql([sql, start_node_id: id])
     end
   end
+
+  # def ancestors
+  #   node = self
+  #   ancestors = []
+  #   while node.parent
+  #     ancestors << node.parent
+  #     node = node.parent
+  #   end
+  #   ancestors.reverse
+  # end
 
   def common_ancestors(other)
     return if other.nil?

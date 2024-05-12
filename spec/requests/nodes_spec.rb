@@ -11,7 +11,7 @@ RSpec.describe "Nodes", type: :request do
       context 'returns the lowest common ancestor' do
         before { get "/nodes/#{child.id}/common_ancestors/#{grandchild.id}" }
         specify { expect(response).to have_http_status(:ok) }
-        specify { expect(json_response['lowest_common_ancestor']).to eq(root.id) }
+        specify { expect(json_response['lowest_common_ancestor']).to eq(child.id) }
         specify { expect(json_response['root_id']).to eq(root.id) }
       end
     end

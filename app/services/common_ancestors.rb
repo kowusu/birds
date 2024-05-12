@@ -7,7 +7,6 @@ class CommonAncestors
 
   def common_ancestors
     return [] if @node_a.nil? || @node_b.nil?
-    return @node_a.ancestors + [@node_a] if @node_a == @node_b
     @common_ancestors ||= (@node_a.ancestors & @node_b.ancestors)
   end
 

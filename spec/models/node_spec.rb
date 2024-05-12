@@ -9,12 +9,12 @@ RSpec.describe Node, type: :model do
   let(:grandchild) { create(:node, parent: child) }
 
   describe "#ancestors" do
-    it "returns an empty array if the node has no parents" do
-      expect(root.ancestors).to eq([])
+    it "returns an array of self if the node has no parents" do
+      expect(root.ancestors).to eq([root])
     end
 
     it "returns all ancestors of a node" do
-      expect(child.ancestors).to eq([root, parent])
+      expect(child.ancestors).to eq([root, parent, child])
     end
   end
 
