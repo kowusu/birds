@@ -22,16 +22,6 @@ class Node < ApplicationRecord
     end
   end
 
-  # def ancestors
-  #   node = self
-  #   ancestors = []
-  #   while node.parent
-  #     ancestors << node.parent
-  #     node = node.parent
-  #   end
-  #   ancestors.reverse
-  # end
-
   def common_ancestors(other)
     return if other.nil?
     return @common_ancestors if @common_ancestors&.include?(other)

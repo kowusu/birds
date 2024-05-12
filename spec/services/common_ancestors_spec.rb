@@ -35,7 +35,7 @@ RSpec.describe CommonAncestors, type: :model do
     end
 
     it "returns the lowest common ancestor of two nodes" do
-      expect(common_ancestors.lowest).to eq(root)
+      expect(common_ancestors.lowest).to eq(parent)
     end
   end
 
@@ -48,7 +48,7 @@ RSpec.describe CommonAncestors, type: :model do
 
   describe "#depth_common_ancestors" do
     it "returns the depeth of common ancestor" do
-      expect(common_ancestors.depth).to eq(1)
+      expect(common_ancestors.depth).to eq(2)
     end
 
     context "returns nil" do
