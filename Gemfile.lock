@@ -71,6 +71,7 @@ GEM
     builder (3.2.4)
     concurrent-ruby (1.2.3)
     crass (1.0.6)
+    csv (3.2.2)
     date (3.3.4)
     debug (1.9.2)
       irb (~> 1.10)
@@ -189,6 +190,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
+  csv
   debug
   factory_bot_rails
   pg (~> 1.1)
