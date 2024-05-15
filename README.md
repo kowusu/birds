@@ -9,6 +9,10 @@ rails db:create db:migrate #optional: db:seed
 #optional: rails dev:cache # toggle on/off development caching
 rails server
 ```
+## High level System Design
+
+![High Level System Design](docs/Bird_High_Level_Design.drawio.png)
+
 ## Solution Overview
 For this project, I implemented the solution using Ruby on Rails, supported by a PostgreSQL database. Here's a breakdown of the key components and strategies employed:
 
