@@ -56,6 +56,82 @@ end
 ```
 This method allows for the handling of heavy tasks asynchronously, thus enhancing user experience by not blocking web server processes.
 
+### Database Triggers for Hierarchical Data Integrity
+
+Another alternative to managing hierarchical data involves the use of database triggers to automatically maintain `ancestor_ids` and `descendant_ids`. This approach leverages the database's capabilities to ensure data integrity and can significantly reduce application-level complexity.
+
+#### Ancestor ID Triggers
+
+- **Purpose**: Automatically update `ancestor_ids` when new nodes are inserted or when a node's parent changes. This ensures that each node always has a correct and up-to-date path to the root, which is crucial for operations that depend on the full hierarchy.
+
+- **Implementation**:
+  ```sql
+  CREATE OR REPLACE FUNCTION update_ancestor_ids()
+  RETURNS TRIGGER AS $$
+  BEGIN
+      -- Logic to concatenate ancestor IDs from the parent node, ensuring all ancestors are included
+      RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER trg_update_ancestor_ids
+  BEFORE INSERT OR UPDATE ON nodes
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_ancestor_ids();
+
+#### Descendant ID Triggers
+
+- **Purpose**: Keep `descendant_ids` updated in real-time as nodes are added or modified within the tree. This trigger would help in quickly retrieving all descendants of a given node without recursively querying the database.
+
+- **Implementation**:
+  ```sql
+  CREATE OR REPLACE FUNCTION update_descendant_ids()
+  RETURNS TRIGGER AS $$
+  BEGIN
+      -- Logic to append new node IDs to the descendant lists of all ancestor nodes
+      RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER trg_update_descendant_ids
+  AFTER INSERT OR UPDATE ON nodes
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_descendant_ids();
+  ```
+
+### Combining Database Triggers with Stored Procedures for CTE Queries
+
+For more sophisticated data management, combining database triggers with stored procedures that utilize CTEs offers a robust solution for maintaining and querying hierarchical data:
+
+- **Stored Procedures for CTE Queries**: Create stored procedures to handle complex recursive queries, such as fetching all descendants or ancestors of a node, using CTEs to simplify and optimize query execution.
+
+- **Trigger Integration**:
+  ```sql
+  -- Example of a stored procedure using a CTE to fetch descendants
+  CREATE OR REPLACE FUNCTION get_descendants(node_id INT)
+  RETURNS TABLE(id INT, name TEXT) AS $$
+  BEGIN
+      RETURN QUERY
+      WITH RECURSIVE descendants AS (
+          SELECT id, name
+          FROM nodes
+          WHERE parent_id = node_id
+      UNION ALL
+          SELECT n.id, n.name
+          FROM nodes n
+          JOIN descendants d ON d.id = n.parent_id
+      )
+      SELECT * FROM descendants;
+  END;
+  $$ LANGUAGE plpgsql;
+
+  -- Trigger that updates hierarchy using the stored procedure
+  CREATE TRIGGER trg_update_node_hierarchy
+  AFTER INSERT OR UPDATE ON nodes
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_hierarchy();
+  ```
+
 ## Trade-offs
 
 While the chosen technologies and strategies provide significant benefits, they come with their own set of trade-offs:
